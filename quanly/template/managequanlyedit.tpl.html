@@ -1,0 +1,332 @@
+{if $result_code}<div class="message">{$amessages.result_code.$result_code}</div>{/if}
+{if $error_code}<div class="message2">{$amessages.error_code.$error_code}</div>{/if}
+{if $error}
+{if $error.invalid || $error.message}
+{assign var=input value=$error.INPUT}
+<div class="errorBox">
+<h2>{$locale->msg('error_notes')}:</h2>
+<ul class="listStyle">
+{foreach from=$input item=field}
+{if $field.error}<li>{$field.message}</li>{/if}
+{/foreach}
+<li>{$error.message}</li>
+</ul>
+</div>
+{/if}
+{/if}
+<div class="formContent">
+<h1>Cập nhật trường học</h1>
+{if $validItem}
+{if $item}
+<!-- Load product info -->
+<form action="/{$aScript}" method="post" name="formEdit" id="formEdit" enctype="multipart/form-data" >
+<fieldset>
+<p><label for="languages">Ngôn ngữ:</label>
+<select name="languages" id="languages">
+    {if $languagesList}
+    <option value="all">Tất cả</option>
+    {foreach $languagesList as $itemLang}
+    <option value="{$itemLang->getPrefix()}">{$itemLang->getName()}</option>
+    {/foreach}
+    {/if}
+</select></p>
+<input hidden value="" name="display" id="display" />
+<p><label for="cat_id">{$locale->msg('of_procate')}:</label>
+<select name="cat_id" id="cat_id">
+{$categoryCombo}
+</select></p>
+<p><label for="status">{$locale->msg('system_status')}:</label>
+<select name="status" id="status" class="small">
+<option value="1"{if $item->getStatus() eq "1"} selected="selected"{/if}>{$locale->msg('enable')}</option>
+<option value="0"{if $item->getStatus() eq "0"} selected="selected"{/if}>{$locale->msg('disable')}</option>
+</select></p>
+<!-- <p><label for="product_status">{$locale->msg('product_status')}:</label>
+<select name="product_status" id="product_status" class="small">
+<option value="0"{if $item->getIdtab() eq 0} selected="selected"{/if}>{$amessages['product_stock'][0]}</option>
+<option value="1"{if $item->getIdtab() eq 1} selected="selected"{/if}>{$amessages['product_stock'][1]}</option>
+</select></p> -->
+<p><label for="position">{$locale->msg('position')}:</label>
+<input class="small" type="text" value="{$item->getPosition()}" name="position" id="position" /></p>
+<p><label for="slug">{$locale->msg('slug')}:</label>
+    <input class="small" type="text" value="{$item->getSlug()}" name="slug" id="slug" /></p>
+
+
+
+
+{if $languagesList}
+{foreach $languagesList as $keyLang => $itemLang}
+<div class="display_item" id="display_{$itemLang->getPrefix()}">
+    <input hidden class="keyLang" value="{$itemLang->getPrefix()}">
+    <div class="name_hidden">
+        <!-- <p><label for="name{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}">Tên dịch vụ ({$itemLang->getName()}):</label>
+            <input type="text" value="{$item->getName($itemLang->getPrefix())}" name="name{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}" id="name{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}" /></p>
+    </div>
+    
+<p><label for="price_day">Chi phí theo ngày ({$itemLang->getName()}): </label>
+    <input type="number" value="{$item->getPriceDay($itemLang->getPrefix())}" name="price_day{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}" id="price_day{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}" /></p>
+
+    
+<p><label for="price_week">Chi phí theo tuần ({$itemLang->getName()}): </label>
+    <input type="number" value="{$item->getPriceWeek($itemLang->getPrefix())}" name="price_week{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}" id="price_week{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}" /></p>
+    
+    <p><label for="price_month">Chi phí theo tháng ({$itemLang->getName()}): </label>
+    <input type="number" value="{$item->getPriceMonth($itemLang->getPrefix())}" name="price_month{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}" id="price_month{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}" /></p>
+
+
+    <div class="keyword_hidden">
+        <p><label for="keyword{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}">Từ khóa ({$itemLang->getName()}): </label>
+            <input type="text" value="{$item->getKeyword($itemLang->getPrefix())}" name="keyword{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}" id="keyword{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}" /></p>
+    </div> -->
+
+    <div class="sapo_hidden">
+        <p><label for="description{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}">{$locale->msg('sapo')} ({$itemLang->getName()}):</label>
+            <textarea rows="10" cols="20" name="intro{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}" id="intro{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}">{$item->getIntro($itemLang->getPrefix())}</textarea></p>
+    </div>
+    
+    <div class="text_transmission_hidden">
+        <p><label for="text_transmission{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}">Loại xe ({$itemLang->getName()}):</label>
+            <textarea rows="10" cols="20" name="text_transmission{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}" id="text_transmission{if $itemLang->getPrefix() == 'vn'}{else}_{$itemLang->getPrefix()}{/if}">{$item->getTextTransmission($itemLang->getPrefix())}</textarea></p>
+    </div>
+</diV>
+{/foreach}
+{/if}
+
+
+<!-- <p><label for="number_seat">Số lượng chỗ: </label>
+<input type="number" value="{$item->getProperty('number_seat')}" name="number_seat" id="number_seat" /></p>
+
+<p><label for="number_door">Số lượng cửa: </label>
+<input type="number" value="{$item->getProperty('number_door')}" name="number_door" id="number_door" /></p> -->
+
+
+
+<p><label for="files">{$locale->msg('avatar')}:</label><input type="file" name="files" id="files" /></p>
+{assign var=photos value=$item->getProperty('photos')}
+{if $photos}
+<p>
+<div class="listPhoto">
+<ul>
+{foreach from=$photos item=photo}
+<li><a href="{$photo}" target="_blank"><img src="{$photo}" width="100" /></a><a href="/{$aScript}?op=manage&act=quanly&mod=edit&id={$item->getId()}&doo=delPhoto&photo={$photo}" title="{$locale->msg('delete_file')}" class="btnDelete">{$locale->msg('delete')}</a></li>
+{/foreach}
+</ul>
+</div>
+</p>
+<!-- {/if}
+
+
+<p><label for="images">Hình ảnh đính kèm:</label><input type="file"  multiple="multiple" name="images[]" id="images[]" /></p>
+{assign var=images value=$item->getProperty('images')}
+{if $images}
+<p>
+<div class="listPhoto">
+<ul>
+{foreach from=$images item=image}
+<li><a href="{$image}" target="_blank"><img src="{$image}" width="100" /></a><a href="/{$aScript}?op=manage&act=car&mod=edit&id={$item->getId()}&doo=delImage&image={$image}" title="{$locale->msg('delete_file')}" class="btnDelete">{$locale->msg('delete')}</a></li>
+{/foreach}
+</ul>
+</div>
+</p> -->
+{/if}
+
+
+<br />
+
+{if $fieldList}
+<br /><h2>{$locale->msg('list_custom_field')}</h2>
+{foreach key=no from=$fieldList item=field}
+{$field->displayHTML($item->getProperty($field->getName()))}
+{/foreach}
+{/if}
+<br />
+<br />
+<p class="btn">
+<input type="hidden" name="op" value="manage" />
+<input type="hidden" name="act" value="quanly" />
+<input type="hidden" name="mod" value="edit" />
+<input type="hidden" name="doo" value="submit" />
+<input type="hidden" name="sCode" value="{$sCode}_" />
+<input type="hidden" name="id" value="{$item->getId()}" />
+<input type="hidden" name="lang" value="{$lang}" />
+<input type="submit" value="{$locale->msg('button_submit')}" title="{$locale->msg('button_submit')}" name="btnSubmit" />
+<input type="reset" value="{$locale->msg('button_reset')}" title="{$locale->msg('button_reset')}" name="btnReset" />
+<input type="button" onclick="javascript:formSubmit('formEdit','list','cancel',0);" value="{$locale->msg('button_cancel')}" title="{$locale->msg('button_cancel')}" name="btnCancel" />
+</p>
+</fieldset>
+</form>
+{else}
+<!-- Load submitted info -->
+<form action="/{$aScript}" method="post" name="formEdit" id="formEdit" enctype="multipart/form-data" >
+<fieldset>
+<p><strong>* {$locale->msg('required_fields')}</strong></p>
+<p><label for="cat_id">{$locale->msg('of_procate')}:</label>
+<select name="cat_id" id="cat_id">
+{$categoryCombo}
+</select></p>
+<p><label for="status">{$locale->msg('system_status')}:</label>
+<select name="status" id="status">
+<option value="1"{if isset($error.INPUT) && $error.INPUT.status.value eq 1} selected="selected"{/if}>{$locale->msg('enable')}</option>
+<option value="0"{if isset($error.INPUT) && $error.INPUT.status.value eq 0} selected="selected"{/if}>{$locale->msg('disable')}</option>
+</select></p>
+<p><label for="product_status">{$locale->msg('product_status')}:</label>
+    <select name="product_status" id="product_status" class="small">
+    <option value="0"{if isset($error.INPUT) && $error.INPUT.car_status.value eq 1} selected="selected"{/if}>{$amessages['product_stock'][0]}</option>
+    <option value="1"{if isset($error.INPUT) && $error.INPUT.car_status.value eq 0} selected="selected"{/if}>{$amessages['product_stock'][1]}</option>
+    </select></p>
+    <p{if isset($error.INPUT) && $error.INPUT.position.error} class="errormsg"{/if}><label for="position">{$locale->msg('position')}:</label>
+    <input class="small" type="text" value="{if isset($error.INPUT)}{$error.INPUT.position.value}{/if}" name="position" id="position" /></p>
+    <p{if isset($error.INPUT) && $error.INPUT.name.error} class="errormsg"{/if}><label for="name">* Tên xe (Việt Nam): </label>
+    <input type="text" value="{if isset($error.INPUT)}{$error.INPUT.name.value}{/if}" name="name" id="name" /></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.name_en.error} class="errormsg"{/if}><label for="name_en">Tên xe(Anh): </label>
+    <input type="text" value="{if isset($error.INPUT)}{$error.INPUT.name_en.value}{/if}" name="name_en" id="name_en" /></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.name_fr.error} class="errormsg"{/if}><label for="name_fr">Tên xe (Pháp): </label>
+    <input type="text" value="{if isset($error.INPUT)}{$error.INPUT.name_fr.value}{/if}" name="name_fr" id="name_fr" /></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.name_jp.error} class="errormsg"{/if}><label for="name_jp">Tên xe (Nhật): </label>
+    <input type="text" value="{if isset($error.INPUT)}{$error.INPUT.name_jp.value}{/if}" name="name_jp" id="name_jp" /></p>
+    <br>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.price_day.error} class="errormsg"{/if}><label for="price_day">Chi phí theo ngày (Việt Nam): </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.price_day.value}{/if}" name="price_day" id="price_day" /></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.price_week.error} class="errormsg"{/if}><label for="price_week">Chi phí theo tuần (Việt Nam): </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.price_week.value}{/if}" name="price_week" id="price_week" /></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.price_month.error} class="errormsg"{/if}><label for="price_month">Chi phí theo tháng (Việt Nam): </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.price_month.value}{/if}" name="price_month" id="price_month" /></p>
+    <br>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.price_day_en.error} class="errormsg"{/if}><label for="price_day_en">Chi phí theo ngày (Anh): </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.price_day_en.value}{/if}" name="price_day_en" id="price_day_en" /></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.price_week_en.error} class="errormsg"{/if}><label for="price_week_en">Chi phí theo tuần (Anh): </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.price_week_en.value}{/if}" name="price_week_en" id="price_week_en" /></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.price_month_en.error} class="errormsg"{/if}><label for="price_month_en">Chi phí theo tháng (Anh): </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.price_month_en.value}{/if}" name="price_month_en" id="price_month_en" /></p>
+    <br>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.price_day_fr.error} class="errormsg"{/if}><label for="price_day_fr">Chi phí theo ngày (Pháp): </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.price_day_fr.value}{/if}" name="price_day_fr" id="price_day_fr" /></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.price_week_fr.error} class="errormsg"{/if}><label for="price_week_fr">Chi phí theo tuần (Pháp): </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.price_week_fr.value}{/if}" name="price_week_fr" id="price_week_fr" /></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.price_month_fr.error} class="errormsg"{/if}><label for="price_month_fr">Chi phí theo tháng (Pháp): </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.price_month_fr.value}{/if}" name="price_month_fr" id="price_month_fr" /></p>
+    
+    <br>
+    <p{if isset($error.INPUT) && $error.INPUT.price_day_jp.error} class="errormsg"{/if}><label for="price_day_jp">Chi phí theo ngày (Nhật): </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.price_day_jp.value}{/if}" name="price_day_jp" id="price_day_jp" /></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.price_week_jp.error} class="errormsg"{/if}><label for="price_week_jp">Chi phí theo tuần (Nhật): </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.price_week_jp.value}{/if}" name="price_week_jp" id="price_week_jp" /></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.price_month_jp.error} class="errormsg"{/if}><label for="price_month_jp">Chi phí theo tháng (Nhật): </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.price_month_jp.value}{/if}" name="price_month_jp" id="price_month_jp" /></p>
+    
+    <br>
+    <p{if isset($error.INPUT) && $error.INPUT.keyword.error} class="errormsg"{/if}><label for="keyword">Từ khóa (Việt Nam): </label>
+<input type="text" value="{if isset($error.INPUT)}{$error.INPUT.keyword.value}{/if}" name="keyword" id="keyword" /></p>
+<p{if isset($error.INPUT) && $error.INPUT.keyword_en.error} class="errormsg"{/if}><label for="keyword_en">Từ khóa (Anh): </label>
+<input type="text" value="{if isset($error.INPUT)}{$error.INPUT.keyword_en.value}{/if}" name="keyword_en" id="keyword_en" /></p>
+<p{if isset($error.INPUT) && $error.INPUT.keyword_fr.error} class="errormsg"{/if}><label for="keyword_fr">Từ khóa (Pháp): </label>
+<input type="text" value="{if isset($error.INPUT)}{$error.INPUT.keyword_fr.value}{/if}" name="keyword_fr" id="keyword_fr" /></p>
+<p{if isset($error.INPUT) && $error.INPUT.keyword_jp.error} class="errormsg"{/if}><label for="keyword_jp">Từ khóa (Nhật): </label>
+<input type="text" value="{if isset($error.INPUT)}{$error.INPUT.keyword_jp.value}{/if}" name="keyword_jp" id="keyword_jp" /></p>
+    <p{if isset($error.INPUT) && $error.INPUT.intro.error} class="errormsg"{/if}><label for="description">{$locale->msg('sapo')} (Việt Nam):</label>
+    <textarea rows="10" cols="20" name="intro" id="intro">{if isset($error.INPUT)}{$error.INPUT.intro.value}{/if}</textarea></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.intro_en.error} class="errormsg"{/if}><label for="description">{$locale->msg('sapo')} (Anh):</label>
+    <textarea rows="10" cols="20" name="intro_en" id="intro_en">{if isset($error.INPUT)}{$error.INPUT.intro_en.value}{/if}</textarea></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.intro_fr.error} class="errormsg"{/if}><label for="description">{$locale->msg('sapo')} (Pháp):</label>
+    <textarea rows="10" cols="20" name="intro_fr" id="intro_fr">{if isset($error.INPUT)}{$error.INPUT.intro_fr.value}{/if}</textarea></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.intro_jp.error} class="errormsg"{/if}><label for="description">{$locale->msg('sapo')} (Nhật):</label>
+    <textarea rows="10" cols="20" name="intro_jp" id="intro_jp">{if isset($error.INPUT)}{$error.INPUT.intro_jp.value}{/if}</textarea></p>
+    
+    
+    <p{if isset($error.INPUT) && $error.INPUT.text_transmission.error} class="errormsg"{/if}><label for="description">loại xe (Việt Nam):</label>
+    <textarea rows="10" cols="20" name="text_transmission" id="text_transmission">{if isset($error.INPUT)}{$error.INPUT.text_transmission.value}{/if}</textarea></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.text_transmission_en.error} class="errormsg"{/if}><label for="description">loại xe (Anh):</label>
+    <textarea rows="10" cols="20" name="text_transmission_en" id="text_transmission_en">{if isset($error.INPUT)}{$error.INPUT.text_transmission_en.value}{/if}</textarea></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.text_transmission_fr.error} class="errormsg"{/if}><label for="description">loại xe (Pháp):</label>
+    <textarea rows="10" cols="20" name="text_transmission_fr" id="text_transmission_fr">{if isset($error.INPUT)}{$error.INPUT.text_transmission_fr.value}{/if}</textarea></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.text_transmission_jp.error} class="errormsg"{/if}><label for="description">loại xe (Nhật):</label>
+    <textarea rows="10" cols="20" name="text_transmission_jp" id="text_transmission_jp">{if isset($error.INPUT)}{$error.INPUT.text_transmission_jp.value}{/if}</textarea></p>
+ 
+    <!-- <p{if isset($error.INPUT) && $error.INPUT.number_seat.error} class="errormsg"{/if}><label for="number_seat">Số lượng chỗ: </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.number_seat.value}{/if}" name="number_seat" id="number_seat" /></p>
+    
+    <p{if isset($error.INPUT) && $error.INPUT.number_door.error} class="errormsg"{/if}><label for="number_door">Số lượng cửa: </label>
+    <input type="number" value="{if isset($error.INPUT)}{$error.INPUT.number_door.value}{/if}" name="number_door" id="number_door" /></p>
+     -->
+    <p><label for="files">{$locale->msg('avatar')}:</label><input type="file" name="files" id="files" /></p>
+    
+    {assign var=photos value=$itemInfo->getProperty('photos')}
+    {if $photos}
+    <p>
+    <div class="listPhoto">
+    <ul>
+    {foreach from=$photos item=photo}
+    <li><a href="{$photo}" target="_blank"><img src="/upload/{$storeId}/cars/a_{$photo|regex_replace:"/(.png$|.bmp$|.gif$)/":".jpg"}" width="100" /></a><a href="/{$aScript}?op=manage&act=quanly&mod=edit&id={$itemInfo->getId()}&doo=delPhoto&photo={$photo}" title="{$locale->msg('delete_file')}" class="btnDelete">{$locale->msg('delete')}</a></li>
+    {/foreach}
+    </ul>
+    </div>
+    {/if}
+
+<p><label for="images">Hình ảnh đính kèm:</label><input type="file"  multiple="multiple" name="images[]" id="images[]" /></p>
+
+{assign var=images value=$itemInfo->getProperty('images')}
+{if $images}
+<p>
+<div class="listPhoto">
+<ul>
+{foreach from=$images item=image}
+<li><a href="{$image}" target="_blank"><img src="/upload/{$storeId}/cars/a_{$image|regex_replace:"/(.png$|.bmp$|.gif$)/":".jpg"}" width="100" /></a><a href="/{$aScript}?op=manage&act=quanly&mod=edit&id={$itemInfo->getId()}&doo=delImage&image={$image}" title="{$locale->msg('delete_file')}" class="btnDelete">{$locale->msg('delete')}</a></li>
+{/foreach}
+</ul>
+</div>
+{/if}
+<br />
+<p class="btn">
+<input type="hidden" name="op" value="manage" />
+<input type="hidden" name="act" value="quanly" />
+<input type="hidden" name="mod" value="edit" />
+<input type="hidden" name="doo" value="submit" />
+<input type="hidden" name="id" value="{$id}" />
+<input type="hidden" name="sCode" value="{$sCode}_" />
+<input type="hidden" name="lang" value="{$lang}" />
+<input type="submit" value="{$locale->msg('button_submit')}" title="{$locale->msg('button_submit')}" name="btnSubmit" />
+<input type="reset" value="{$locale->msg('button_reset')}" title="{$locale->msg('button_reset')}" name="btnReset" />
+<input type="button" onclick="javascript:formSubmit('formEdit','list','cancel',0);" value="{$locale->msg('button_cancel')}" title="{$locale->msg('button_cancel')}" name="btnCancel" />
+</p>
+</fieldset>
+</form>
+{/if}
+{else}{$locale->msg('code_invalid')}...{/if}
+</div>
+</div>
+
+
+<script>
+    $('#languages').on('change', function(e) {
+       var valueSelected = this.value;
+       if (valueSelected == "all") {
+           $('.display_item').css("display", "block");
+       }else{
+           if($("#display").val()=="all"){
+           }else{
+               $('.display_item').css("display", "none");
+               $('#display_'+valueSelected).css("display", "block");
+               $('#display').attr("value", valueSelected);
+           }
+       }
+   });
+</script>
